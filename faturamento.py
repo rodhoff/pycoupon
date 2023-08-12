@@ -1,11 +1,8 @@
 from tkinter import *
-from  tkinter import ttk
-from tkinter import messagebox
-import pymysql
-from tkinter import Tk, Label
+from tkinter import Tk, Label, ttk, messagebox
 from PIL import Image, ImageTk
-
 import pymysql
+
 
 window = Tk()
 window.geometry("900x600")
@@ -346,7 +343,7 @@ def loginWindow():
     loginLabel = Label(window, text="Login", font="Arial 30",bg='#093249', fg="white")
     loginLabel.grid(row=1, column=1, padx= (0,850), columnspan=2, pady=(170,5))
 
-    usernameLabel = Label(window, text="Username :", font=("bold", 15), bg='#093249', fg="white")
+    usernameLabel = Label(window, text="Usuario :", font=("bold", 15), bg='#093249', fg="white")
     usernameLabel.grid(row=2, column=1, padx=(30, 100), pady=5)
 
     passwordLabel = Label(window, text="Senha :", font=("bold", 15),bg='#093249', fg="white")
