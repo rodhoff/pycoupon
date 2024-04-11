@@ -5,9 +5,9 @@ import pymysql
 
 
 window = Tk()
-window.geometry("900x600")
+window.geometry("1280x960")
 window.title("Faturamentos em Python | padilhajordane@gmail.com")
-window.configure(bg='#093249')
+# window.configure(bg='#093249')
 #image_path = "caminho\da\sua\imagem"
 #image = Image.open(image_path)
 #background_Label = Label(window)
@@ -72,9 +72,9 @@ rateVar.set("%.2f" % itemRate)
 costVar = StringVar()
 costVar.trace('w', costFieldListener)
 
-billsTV = ttk.Treeview(height=15, columns=('Rate', 'Quantity', 'Cost'))
+billsTV = ttk.Treeview(height=15, columns=('Name','Rate', 'Quantity', 'Cost'))
 
-updateTV = ttk.Treeview(height=15, columns=('name', 'rate', 'type','storetpe'))
+updateTV = ttk.Treeview(height=15, columns=('name', 'rate', 'type','storetype'))
 
 
 storeOptions = ['Opção1', 'Opção2']
@@ -103,16 +103,17 @@ def generate_bill():
     itemName = itemVariable.get()
     quantity = quantityVar.get()
     cost = costVar.get()
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor()
 
-    query = "insert into bill (name,quantity,rate,cost) value('{}','{}','{}','{}')".format(itemName, quantity, itemRate, cost)
+    query = "insert into tabela_exemplo (name,quantity,rate,cost) value('{}',10,'{}', 10 )".format(itemName, itemRate)
     cursor.execute(query)
     conn.commit()
     conn.close()
 
-    listDict = {"name":itemName, "rate":itemRate, "quantity":quantity,"cost":cost}
+    listDict = {"name":itemName, "rate":itemRate, "quantity":quantity,"cost":10}
     itemLists.append(listDict)
+    cost = "10"
     totalCost=float(cost)
     quantityVar.set("0")
     costVar.set("0")
@@ -149,13 +150,13 @@ def getItemLists():
     records=updateTV.get_children()
     for element in records:
         updateTV.delete(element)
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor(pymysql.cursors.DictCursor)
-    query = "select * from itemlist"
+    query = "select * from tabela_exemplo"
     cursor.execute(query)
     data = cursor.fetchall()
     for row in data:
-        updateTV.insert('','end',text=row['nameid'], values=(row['name'],row['rate'],row['type'],row['storetpe']))
+        updateTV.insert('','end',text=row['name'], values=(row['name'],row['rate'],row['type'],row['storetype']))
     updateTV.bind("<Double-1>", onDoubleClick)
     conn.close()
 
@@ -201,17 +202,17 @@ def readAllData():
     global rateVar
     options = []
     rateDict = {}
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor(pymysql.cursors.DictCursor)
 
-    query = "select * from itemlist"
+    query = "select * from tabela_exemplo"
     cursor.execute(query)
     data = cursor.fetchall()
     count = 0
     for row in data:
         count += 1
-        options.append(row['nameid'])
-        rateDict[row['nameid']] = row['rate']
+        options.append(row['name'])
+        rateDict[row['name']] = row['rate']
         itemVariable.set(options[0])
         itemRate = str(rateDict[options[0]])  # int
     conn.close()
@@ -241,9 +242,9 @@ def updateBillsData():
     for element in records:
         billsTV.delete(element)
 
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor(pymysql.cursors.DictCursor)
-    query = "select * from bill"
+    query = "select * from tabela_exemplo"
     cursor.execute(query)
     data = cursor.fetchall()
 
@@ -258,11 +259,13 @@ def adminLogin():
     global passwordVar
 
     username = usernameVar.get()
-    password = passwordVar.get()
+ 
+#   password = passwordVar.get()
 
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor()
-    query = "select * from users where username='{}' and password='{}'".format(username, password)
+    query = "select * from users where username='{}' ".format(username)
+#    and password='{}'
     cursor.execute(query)
     data = cursor.fetchall()
     admin = False
@@ -294,11 +297,11 @@ def addItem():
     name = addItemNameVar.get()
     rate = addItemRateVar.get()
     Type = addItemTypeVar.get()
-    storetpe = addstoredVar.get()
+    storetype = addstoredVar.get()
     nameId = name.replace(" ", "_")
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor()
-    query = "insert into itemlist (name,nameid,rate,type,storetpe) value('{}','{}','{}','{}','{}')".format(name,nameId, rate, Type, storetpe)
+    query = "insert into tabela_exemplo (name,rate,type,storetype) value('{}','{}','{}','{}')".format(name, rate, Type, storetype)
     cursor.execute(query)
     conn.commit()
     conn.close()
@@ -316,10 +319,10 @@ def updateItem():
     name = addItemNameVar.get()
     rate = addItemRateVar.get()
     Type = addItemTypeVar.get()
-    storetpe = addstoredVar.get()
-    conn = pymysql.connect(host="localhost", user="root", passwd="", db="billservice")
+    storetype = addstoredVar.get()
+    conn = pymysql.connect(host="localhost", user="root", passwd="@Brasil01", db="billservice")
     cursor = conn.cursor()
-    query = "UPDATE itemlist SET name='{}', rate='{}', type='{}', storetpe='{}' WHERE nameid={}".format(name, rate, Type, storetpe, updateItemId)
+    query = "UPDATE tabela_exemplo SET name='{}', rate='{}', type='{}', storetype='{}' WHERE nameid={}".format(name, rate, Type, storetype, updateItemId)
     cursor.execute(query)
     conn.commit()
     conn.close()
