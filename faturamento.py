@@ -1,6 +1,10 @@
 from tkinter import *
 from tkinter import Tk, Label, ttk, messagebox
 from PIL import Image, ImageTk
+from escpos import NetworkConnection
+from escpos import SerialConnection
+from escpos.impl.epson import GenericESCPOS
+
 import pymysql
 
 
@@ -162,6 +166,10 @@ def getItemLists():
 
 
 def print_bill():
+    conn = SerialConnection.create('COM2:9600,8,1,N')    
+    printer = GenericESCPOS(conn)
+    printer.init()
+    printer.text('----> Printer Test')
     global itemLists
     global totalCost
     print("======================== Cupom Fiscal ======================")
